@@ -1,0 +1,12 @@
+Einfache Heizlast
+1-3 Räume (nicht mehr als 3!)
+Baujahr
+Sanierte Bauteile (Sanierungsjahr)
+Nicht sanierte Bauteile:
+U-Werte für folgende Zeiträume: weniger als 10 Jahre, 20 Jahre, 30 Jahre, 40 Jahre, älter als 40 Jahre
+Einfache Grundrisserfassung
+Einfache Fenstererfassung
+Boden gegen: beheizt, unbeheizt, aussen
+Dach: Schrägdach / Flachdach / Estrichboden
+Lüftung: Standard 0.3 h-1
+Innenwände (gg. beheizt/unbeheizt)
