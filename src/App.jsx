@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Calculator, Home, Wind, MapPin, Info } from 'lucide-react';
+import { Plus, Trash2, Calculator, Home, Wind, MapPin, Info, ShoppingCart } from 'lucide-react';
 
 // U-Werte Kataloge
 const U_WERTE = {
@@ -49,10 +49,10 @@ const BODEN_TYPEN = [
 ];
 
 const RAUMNUTZUNG = {
-  'Wohnraum': { icon: '🛋️', temp: 20 },
+  'Wohnraum': { icon: '🛋️', temp: 21 },
   'Schlafzimmer': { icon: '🛏️', temp: 18 },
-  'Badezimmer': { icon: '🚿', temp: 24 },
-  'Küche': { icon: '🍳', temp: 20 }
+  'Badezimmer': { icon: '🚿', temp: 22 },
+  'Küche': { icon: '🍳', temp: 21 }
 };
 
 const LUEFTUNG_ARTEN = [
@@ -60,11 +60,6 @@ const LUEFTUNG_ARTEN = [
     name: 'Fensterlüftung',
     beschreibung: 'Natürliche Lüftung durch Öffnen der Fenster',
     luftwechsel: 0.5
-  },
-  {
-    name: 'Mechanische Lüftung (ohne WRG)',
-    beschreibung: 'Ventilator ohne Wärmerückgewinnung',
-    luftwechsel: 0.4
   },
   {
     name: 'Komfortlüftung mit WRG',
@@ -122,6 +117,28 @@ const InfoBox = ({ children, icon: Icon = Info }) => {
   );
 };
 
+const Tooltip = ({ text, children }) => {
+  const [show, setShow] = useState(false);
+  
+  return (
+    <div className="relative inline-block">
+      <div
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        className="cursor-help"
+      >
+        {children}
+      </div>
+      {show && (
+        <div className="absolute z-50 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg -top-2 left-6">
+          {text}
+          <div className="absolute w-2 h-2 bg-gray-900 transform rotate-45 -left-1 top-4"></div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
   const [activeStep, setActiveStep] = useState(1);
 
@@ -165,7 +182,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
           type="text"
           value={raum.name}
           onChange={(e) => handleChange('name', e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-lg"
+          className="w-full p-3 border border-gray-300 rounded-lg bg-blue-50"
           placeholder="Wohnen"
         />
       </div>
@@ -201,7 +218,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
             step="0.1"
             value={raum.grundflaeche}
             onChange={(e) => handleChange('grundflaeche', parseFloat(e.target.value) || 0)}
-            className="w-full p-3 border border-gray-300 rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-lg bg-blue-50"
           />
         </div>
         <div>
@@ -212,8 +229,8 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
             type="number"
             step="0.1"
             value={raum.raumhoehe}
-            onChange={(e) => handleChange('raumhoehe', parseFloat(e.target.value) || 2.6)}
-            className="w-full p-3 border border-gray-300 rounded-lg"
+            onChange={(e) => handleChange('raumhoehe', parseFloat(e.target.value) || 2.4)}
+            className="w-full p-3 border border-gray-300 rounded-lg bg-blue-50"
           />
         </div>
       </div>
@@ -240,7 +257,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
             type="text"
             value={raum.standort.ort}
             onChange={(e) => handleChange('standort', { ...raum.standort, ort: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-lg bg-blue-50"
             placeholder="Bern"
           />
         </div>
@@ -251,7 +268,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
             type="number"
             value={raum.standort.hoehe}
             onChange={(e) => handleChange('standort', { ...raum.standort, hoehe: parseFloat(e.target.value) || 400 })}
-            className="w-full p-3 border border-gray-300 rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-lg bg-blue-50"
           />
         </div>
 
@@ -294,7 +311,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
               <select
                 value={wand.richtung}
                 onChange={(e) => handleWandChange(wIdx, 'richtung', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded bg-blue-50"
               >
                 {['Nord', 'Süd', 'Ost', 'West'].map(r => (
                   <option key={r} value={r}>{r}</option>
@@ -307,7 +324,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
               <select
                 value={wand.alter}
                 onChange={(e) => handleWandChange(wIdx, 'alter', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded text-sm"
+                className="w-full p-2 border border-gray-300 rounded text-sm bg-blue-50"
               >
                 {Object.entries(U_WERTE.wand).map(([alter, uWert]) => (
                   <option key={alter} value={alter}>
@@ -322,7 +339,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
               <select
                 value={wand.fensterAlter || 'Neu'}
                 onChange={(e) => handleWandChange(wIdx, 'fensterAlter', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded text-sm"
+                className="w-full p-2 border border-gray-300 rounded text-sm bg-blue-50"
               >
                 {Object.entries(U_WERTE.fenster).map(([alter, uWert]) => (
                   <option key={alter} value={alter}>
@@ -334,23 +351,23 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Wandfläche (m²)</label>
+                <label className="block text-xs text-gray-600 mb-1 font-bold">Wandfläche (m²)</label>
                 <input
                   type="number"
                   step="0.1"
                   value={wand.flaeche}
                   onChange={(e) => handleWandChange(wIdx, 'flaeche', parseFloat(e.target.value) || 0)}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded bg-blue-50"
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Fensterfläche (m²)</label>
+                <label className="block text-xs text-gray-600 mb-1 font-bold">Fensterfläche (m²)</label>
                 <input
                   type="number"
                   step="0.1"
                   value={wand.fensterFlaeche}
                   onChange={(e) => handleWandChange(wIdx, 'fensterFlaeche', parseFloat(e.target.value) || 0)}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded bg-blue-50"
                 />
               </div>
             </div>
@@ -374,15 +391,20 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
       </InfoBox>
 
       <div>
-        <h4 className="font-medium mb-4">Boden / Decke zu unbeheizten Räumen</h4>
+        <h4 className="font-medium mb-4 text-base">Boden / Decke zu unbeheizten Räumen</h4>
         
         <div className="space-y-4">
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Bodentyp</label>
+            <label className="block text-xs text-gray-600 mb-1 flex items-center gap-2">
+              Bodentyp
+              <Tooltip text="Die Bodenfläche kann in verschiedene Segmente aufgeteilt werden, bspw. Wenn ein Teil des Boden gegen aussen und ein Teil gegen beheizt ist.">
+                <Info size={14} className="text-blue-500" />
+              </Tooltip>
+            </label>
             <select
               value={raum.boden.typ}
               onChange={(e) => handleChange('boden', { ...raum.boden, typ: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 border border-gray-300 rounded bg-blue-50"
             >
               {BODEN_TYPEN.map(typ => (
                 <option key={typ} value={typ}>{typ}</option>
@@ -396,7 +418,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
               <select
                 value={raum.boden.alter}
                 onChange={(e) => handleChange('boden', { ...raum.boden, alter: e.target.value })}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded bg-blue-50"
               >
                 {Object.entries(U_WERTE.boden).map(([alter, uWert]) => (
                   <option key={alter} value={alter}>{alter} (U={uWert} W/m²K)</option>
@@ -405,23 +427,28 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
             </div>
           )}
 
-          <div className="bg-blue-50 p-3 rounded">
-            <div className="text-sm text-gray-700">
-              <strong>Bodenfläche:</strong> {berechneBodenflaeche().toFixed(2)} m²
+          <div className="bg-green-50 border border-green-200 p-3 rounded">
+            <div className="text-sm text-green-800 font-medium">
+              Bodenfläche: {berechneBodenflaeche().toFixed(2)} m²
             </div>
           </div>
         </div>
 
         <div className="mt-6">
-          <h4 className="font-medium mb-4">Dach / Decke nach oben</h4>
+          <h4 className="font-medium mb-4 text-base">Dach / Decke nach oben</h4>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Dachtyp</label>
+              <label className="block text-xs text-gray-600 mb-1 flex items-center gap-2">
+                Dachtyp
+                <Tooltip text="Zuschlagsfaktoren zur Gebäudegrundfläche in Abhängigkeit des Dachtyps. Es wird von einem einheitlichen Dachtyp ausgegangen. Lukarnen werden ebenfalls über Zuschlagsfaktoren berücksichtig (vereinfachte Berechnung).">
+                  <Info size={14} className="text-blue-500" />
+                </Tooltip>
+              </label>
               <select
                 value={raum.dach.typ}
                 onChange={(e) => handleChange('dach', { ...raum.dach, typ: e.target.value })}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded bg-blue-50"
               >
                 {Object.keys(DACH_TYPEN).map(typ => (
                   <option key={typ} value={typ}>{typ}</option>
@@ -435,7 +462,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
                 <select
                   value={raum.dach.alter}
                   onChange={(e) => handleChange('dach', { ...raum.dach, alter: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded bg-blue-50"
                 >
                   {Object.entries(U_WERTE.dach).map(([alter, uWert]) => (
                     <option key={alter} value={alter}>{alter} (U={uWert} W/m²K)</option>
@@ -444,9 +471,9 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
               </div>
             )}
 
-            <div className="bg-blue-50 p-3 rounded">
-              <div className="text-sm text-gray-700">
-                <strong>Dachfläche:</strong> {berechneDachflaeche().toFixed(2)} m²
+            <div className="bg-green-50 border border-green-200 p-3 rounded">
+              <div className="text-sm text-green-800 font-medium">
+                Dachfläche: {berechneDachflaeche().toFixed(2)} m²
               </div>
             </div>
           </div>
@@ -586,7 +613,7 @@ const HeizlastRechner = () => {
     name: '',
     nutzung: 'Wohnraum',
     grundflaeche: 20,
-    raumhoehe: 2.6,
+    raumhoehe: 2.4,
     standort: { ort: '', hoehe: 540 },
     waende: [{ richtung: 'Nord', alter: 'Neubau', fensterAlter: 'Neu', flaeche: 12, fensterFlaeche: 3 }],
     dach: { typ: 'Flachdach', alter: 'Neubau' },
@@ -598,7 +625,7 @@ const HeizlastRechner = () => {
 
   const berechneHeizlast = (raum) => {
     const normAussenTemp = berechneNormAussentemperatur(raum.standort.hoehe);
-    const innenTemp = RAUMNUTZUNG[raum.nutzung]?.temp || 20;
+    const innenTemp = RAUMNUTZUNG[raum.nutzung]?.temp || 21;
     const deltaT = innenTemp - normAussenTemp;
     const volumen = raum.grundflaeche * raum.raumhoehe;
     
@@ -649,9 +676,17 @@ const HeizlastRechner = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold text-gray-900">Heizlastrechner</h1>
-        <p className="text-gray-600 mt-1">Nach SIA 384/2 · Vereinfachte Berechnung</p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900">Heizlastrechner</h1>
+          <p className="text-gray-600 mt-1">Nach DIN EN 12831 · Vereinfachte Berechnung</p>
+        </div>
+        {raeume.length > 0 && !showResults && (
+          <div className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg">
+            <ShoppingCart size={20} />
+            <span className="font-semibold">{raeume.length}/3</span>
+          </div>
+        )}
       </div>
 
       {raeume.length === 0 && (
@@ -659,7 +694,7 @@ const HeizlastRechner = () => {
           <Calculator size={64} className="mx-auto text-blue-500 mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-3">Heizlastberechnung starten</h2>
           <p className="text-gray-600 mb-8">
-            Berechnen Sie die Heizlast nach SIA 384/2 (vereinfachte Methode)
+            Berechnen Sie die Heizlast nach DIN EN 12831 (vereinfachte Methode)
           </p>
           <button
             onClick={() => setRaeume([neuerRaum()])}
