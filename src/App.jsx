@@ -80,7 +80,7 @@ const berechneNormAussentemperatur = (hoehe) => {
   return -8 - (hoehe - 400) * 0.005;
 };
 
-const StepIndicator = ({ currentStep, totalSteps }) => {
+const StepIndicator = ({ currentStep, totalSteps, onStepClick }) => {
   return (
     <div className="mb-8">
       <div className="text-center text-base font-medium text-gray-700 mb-4">
@@ -89,13 +89,16 @@ const StepIndicator = ({ currentStep, totalSteps }) => {
       <div className="flex justify-between items-center">
         {[...Array(totalSteps)].map((_, i) => (
           <div key={i} className="flex items-center flex-1">
-            <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-              i + 1 < currentStep ? 'bg-green-500 text-white' : 
-              i + 1 === currentStep ? 'bg-blue-500 text-white' : 
-              'bg-gray-300 text-gray-600'
-            } font-bold text-lg`}>
+            <button
+              onClick={() => onStepClick(i + 1)}
+              className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                i + 1 < currentStep ? 'bg-green-500 text-white hover:bg-green-600' : 
+                i + 1 === currentStep ? 'bg-blue-500 text-white' : 
+                'bg-gray-300 text-gray-600 hover:bg-gray-400'
+              } font-bold text-lg transition cursor-pointer`}
+            >
               {i + 1}
-            </div>
+            </button>
             {i < totalSteps - 1 && (
               <div className={`flex-1 h-1 mx-2 ${
                 i + 1 < currentStep ? 'bg-green-500' : 'bg-gray-300'
