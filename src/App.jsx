@@ -704,7 +704,7 @@ const RaumFormular = ({ raum, index, onChange, onDelete, onComplete }) => {
                 className="px-6 py-3 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2 flex-1 md:flex-none"
               >
                 <Plus size={20} />
-                + Weiterer Raum
+                Weiterer Raum
               </button>
             )}
           </div>
@@ -856,16 +856,12 @@ const PDF_Export = ({ raeume, berechneHeizlast }) => {
 };
 
 const HeizlastRechner = () => {
-  const [raeume, setRaeume] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-  const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
-
   const neuerRaum = () => ({
     name: '',
     nutzung: 'Wohnraum',
     grundflaeche: 20,
     raumhoehe: 2.4,
-    standort: { ort: '', hoehe: 540 },
+    standort: { ort: 'Berlin', hoehe: 540 },
     waende: [{ richtung: 'Nord', alter: 'Neubau', fensterAlter: 'Neu', flaeche: 12, fensterFlaeche: 3 }],
     dach: { typ: 'Flachdach', alter: 'Neubau' },
     boeden: [{ typ: 'Gegen unbeheizt (Keller)', alter: 'Neubau', prozent: 100 }],
@@ -873,6 +869,10 @@ const HeizlastRechner = () => {
     canAddMore: false,
     onAddAnother: null
   });
+
+  const [raeume, setRaeume] = useState([neuerRaum()]);
+  const [showResults, setShowResults] = useState(false);
+  const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
 
   const berechneHeizlast = (raum) => {
     const normAussenTemp = berechneNormAussentemperatur(raum.standort.hoehe);
@@ -964,23 +964,7 @@ const HeizlastRechner = () => {
           )}
         </div>
 
-        {raeume.length === 0 && !showResults && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-12 text-center">
-            <Calculator size={64} className="mx-auto text-blue-500 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">Heizlastberechnung starten</h2>
-            <p className="text-gray-600 mb-8">
-              Berechnen Sie die Heizlast nach DIN EN 12831 (vereinfachte Methode)
-            </p>
-            <button
-              onClick={() => setRaeume([neuerRaum()])}
-              className="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium text-lg"
-            >
-              Neue Berechnung starten
-            </button>
-          </div>
-        )}
-
-        {raeume.length > 0 && !showResults && (
+        {!showResults && (
           <>
             {raeume.length > 1 && (
               <RaumTabs 
